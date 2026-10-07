@@ -1,0 +1,3 @@
+{"question": "How many days of annual leave do employees get?", "expected_answer": "24 days of paid annual leave", "expected_files": ["hr/leave_policy.txt"], "expected_keywords": ["24"]}
+{"question": "How often must passwords be rotated?", "expected_answer": "Every 90 days", "expected_files": ["it/security.md"], "expected_keywords": ["90"]}
+{"question": "Within how many days must travel expenses be submitted?", "expected_answer": "30 days", "expected_files": ["finance/expenses.txt"], "expected_keywords": ["30"]}
