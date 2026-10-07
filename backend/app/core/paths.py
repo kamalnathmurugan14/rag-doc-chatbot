@@ -35,3 +35,12 @@ def sanitize_filename(name: str) -> str:
 
 def ext_of(name: str) -> str:
     return Path(name).suffix.lower().lstrip(".")
+
+
+def is_inside(root: Path, path: Path) -> bool:
+    """False for paths (e.g. symlinks) whose real location is outside `root`; such files must never be read or listed."""
+    try:
+        path.resolve().relative_to(root.resolve())
+        return True
+    except (ValueError, OSError):
+        return False

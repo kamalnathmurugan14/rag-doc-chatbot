@@ -147,3 +147,14 @@ def test_indexing_20_files_is_accurate(container, docs, n_files):
     st = container.ingestion.status()
     assert st["total"] == st["done"] == 7 + n_files and rows(container)["bulk_07.txt"]["n_chunks"] >= 1
     assert container.store.count() == sum(v["n_chunks"] for v in rows(container).values())
+
+
+def test_symlink_pointing_outside_docs_root_is_ignored_not_fatal(container, docs, tmp_path):
+    secret = tmp_path / "outside_secret.txt"
+    secret.write_text("TOP SECRET outside the docs folder", encoding="utf-8")
+    (docs / "sneaky.txt").symlink_to(secret)
+    container.ingestion.run_blocking()
+    st = container.ingestion.status()
+    assert st["total"] == 7 and st["done"] == 7 and st["errors"] == []  # the job finished normally
+    assert "sneaky.txt" not in rows(container)
+    assert not any("TOP SECRET" in d for d in container.store.col.get()["documents"])

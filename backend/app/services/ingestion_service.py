@@ -11,7 +11,7 @@ from app.core.chunker import chunk_pages
 from app.core.cleaner import clean_text
 from app.core.extractors import extract
 from app.core.hashing import sha256_of
-from app.core.paths import ext_of, rel_posix, safe_resolve
+from app.core.paths import ext_of, is_inside, rel_posix, safe_resolve
 from app.db.session import connect
 from app.rag.embedder import Embedder
 from app.rag.vector_store import VectorStore
@@ -110,7 +110,12 @@ class IngestionService:
         out = []
         for p in sorted(root.rglob("*")):
             parts = p.relative_to(root).parts
-            if p.is_file() and not any(x.startswith(".") for x in parts) and ext_of(p.name) in self.s.extensions:
+            if (
+                p.is_file()
+                and not any(x.startswith(".") for x in parts)
+                and ext_of(p.name) in self.s.extensions
+                and is_inside(root, p)
+            ):
                 out.append(p)
         return out
 

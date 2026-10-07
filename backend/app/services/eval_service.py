@@ -9,7 +9,7 @@ from itertools import product
 from pathlib import Path
 
 from app.config import Settings
-from app.core.paths import ext_of, rel_posix
+from app.core.paths import ext_of, is_inside, rel_posix
 from app.db.session import connect
 from app.errors import AppError
 from app.llm.client import LLM, Token, complete
@@ -134,6 +134,7 @@ class EvalService:
             if (
                 p.is_file()
                 and ext_of(p.name) in self.s.extensions
+                and is_inside(root, p)
                 and not any(x.startswith(".") for x in p.relative_to(root).parts)
             ):
                 try:
